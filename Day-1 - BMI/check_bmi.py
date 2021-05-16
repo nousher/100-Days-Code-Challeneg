@@ -14,12 +14,12 @@ valueMap = {'Kg': True,
 'Pounds': True}
 
 lbDict = {
-   'lb': False,
-'Lb': False,
-'Pounds': False,
-'Kg': True,
-'kg': True,
-'Kilogram': True
+   'lb': True,
+'Lb': True,
+'Pounds': True,
+'Kg': False,
+'kg': False,
+'Kilogram': False
 }
 
 def getInputArguments():
@@ -33,47 +33,34 @@ def getInputArguments():
         print("Sorry you have not choosen the right value")
         print("Please re-try!")
         quit(1)
-    Height=input("Please enter your height in ft - (ex: 5.5): ")
-    height = float(Height)
-    if height < 1.0 and height > 15.0:
+    Height=float(input("Please enter your height in ft - (ex: 5.5): "))
+    if Height < 1.0 and Height > 15.0:
         print("Please enter your accurate height in the ft.")
         quit(1)
-    Weight=input("Please enter your weight: ")
-    Weight = float(Weight)
-    return UnitOfMass, height, Weight
+    Weight=float(input("Please enter your weight: "))
+    return UnitOfMass, Height, Weight
 
-def convertKgToLb(UnitMass, weight):
+def convertLbToKg(UnitMass, weight):
     if lbDict[UnitMass] == True:
-        weight = weight * 2.204622621852
+        weight = weight / 2.2046
         weight = math.ceil(weight*100)/100
         logging.debug('weight = %s', weight)
         return weight
     return weight
 
-def convertFtToCentemers(height):
+def convertFtToMeters(height):
 
-    tempCentermeterValue = height * 30.48
+    tempCentermeterValue = height / 3.2808
     tempCentermeterValue = math.ceil(tempCentermeterValue*100)/100
     logging.debug('tempCentermeterValue = %s', tempCentermeterValue)
 
     return tempCentermeterValue
 
 def calculateBMI(weight, height):
-
-    height = height * 0.39370
-    weight = int(weight)
-    logging.debug('weight = %s , height = %s', weight, height)
-
-    tempHeight = int(height)
-    newHeight = tempHeight * tempHeight
-    logging.debug(' newHeight = %s', newHeight)
-
-    tempBmiValue =  (weight / newHeight)
-    logging.debug('tempBmiValue = %s ', tempBmiValue)
-
-    newTempBmiValue = tempBmiValue * 703
-    logging.debug('newTempBmiValue = %s ', newTempBmiValue)
-
+    
+    logging.debug('height = %s', height ** 2)
+    logging.debug('weight = %s', weight)
+    newTempBmiValue = round(weight / height ** 2,1)
     bmiValue = math.ceil(newTempBmiValue*100)/100
     print(bmiValue)
     return bmiValue
@@ -112,8 +99,8 @@ def finalDecision(bmi, category):
 
 def run():
     unit, height, weight = getInputArguments()
-    kgweight = convertKgToLb(unit, weight)
-    meterHeight = convertFtToCentemers(height)
+    kgweight = convertLbToKg(unit, weight)
+    meterHeight = convertFtToMeters(height)
     bmi = calculateBMI(kgweight, meterHeight)
     category = checkBmiCategories(bmi)
     finalDecision(bmi, category)
