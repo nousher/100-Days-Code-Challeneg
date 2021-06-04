@@ -2,6 +2,9 @@
 import math
 from termcolor import colored
 import logging, sys
+import pint
+
+u = pint.UnitRegistry()
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 print('Welcome to the BMI Calculator!')
@@ -24,46 +27,22 @@ lbDict = {
 
 def getInputArguments():
     
-    
-    UnitOfMass =input("What type of Unit would you like to use?")
- 
-    try:
-        valueMap[UnitOfMass]
-    except:
-        print("Sorry you have not choosen the right value")
-        print("Please re-try!")
-        quit(1)
-    Height=float(input("Please enter your height in ft - (ex: 5.5): "))
+
+    Height=float(input("Please enter your height in meters - (ex: 1.56): "))
     if Height < 1.0 and Height > 15.0:
-        print("Please enter your accurate height in the ft.")
+        print("Please enter your accurate height in meters")
         quit(1)
-    Weight=float(input("Please enter your weight: "))
-    return UnitOfMass, Height, Weight
+    Weight=float(input("Please enter your weight in Kg: "))
+    return  Height, Weight
 
-def convertLbToKg(UnitMass, weight):
-    if lbDict[UnitMass] == True:
-        weight = weight / 2.2046
-        weight = math.ceil(weight*100)/100
-        logging.debug('weight = %s', weight)
-        return weight
-    return weight
-
-def convertFtToMeters(height):
-
-    tempCentermeterValue = height / 3.2808
-    tempCentermeterValue = math.ceil(tempCentermeterValue*100)/100
-    logging.debug('tempCentermeterValue = %s', tempCentermeterValue)
-
-    return tempCentermeterValue
 
 def calculateBMI(weight, height):
     
-    logging.debug('height = %s', height ** 2)
-    logging.debug('weight = %s', weight)
-    newTempBmiValue = round(weight / height ** 2,1)
-    bmiValue = math.ceil(newTempBmiValue*100)/100
-    print(bmiValue)
-    return bmiValue
+    tempBMI= weight/ height ** 2
+    tempBMI=round(tempBMI, 2)
+    logging.debug('tempBMI = %s', tempBMI)
+
+    return tempBMI
 
 def checkBmiCategories(bmiValue):
     category =""
@@ -98,10 +77,8 @@ def finalDecision(bmi, category):
     
 
 def run():
-    unit, height, weight = getInputArguments()
-    kgweight = convertLbToKg(unit, weight)
-    meterHeight = convertFtToMeters(height)
-    bmi = calculateBMI(kgweight, meterHeight)
+    height, weight = getInputArguments()
+    bmi = calculateBMI(weight, height)
     category = checkBmiCategories(bmi)
     finalDecision(bmi, category)
 
